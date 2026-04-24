@@ -747,6 +747,10 @@ button:disabled {
   margin-top: 26px;
 }
 
+.analysis-history {
+  margin-top: 32px;
+}
+
 .result-title,
 .history-header h3 {
   margin: 0 0 16px;
