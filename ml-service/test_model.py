@@ -202,17 +202,55 @@ WEATHER_CODES = {
 
 def load_model():
     with open("model.pkl", "rb") as file:
-        return pickle.load(file)
+        return force_single_thread(pickle.load(file))
 
 
 def load_weather_model():
     with open(WEATHER_MODEL_FILE, "rb") as file:
-        return pickle.load(file)
+        return force_single_thread(pickle.load(file))
 
 
 def load_long_range_weather_model():
     with open(LONG_RANGE_WEATHER_MODEL_FILE, "rb") as file:
-        return pickle.load(file)
+        return force_single_thread(pickle.load(file))
+
+
+def force_single_thread(value, seen=None):
+    if seen is None:
+        seen = set()
+
+    if value is None:
+        return value
+
+    object_id = id(value)
+    if object_id in seen:
+        return value
+    seen.add(object_id)
+
+    if hasattr(value, "n_jobs"):
+        try:
+            value.n_jobs = 1
+        except Exception:
+            pass
+
+    if isinstance(value, dict):
+        for item in value.values():
+            force_single_thread(item, seen)
+        return value
+
+    if hasattr(value, "named_steps"):
+        for item in value.named_steps.values():
+            force_single_thread(item, seen)
+
+    if hasattr(value, "steps"):
+        for _, item in value.steps:
+            force_single_thread(item, seen)
+
+    if hasattr(value, "transformers"):
+        for _, item, _ in value.transformers:
+            force_single_thread(item, seen)
+
+    return value
 
 
 def load_crop_profiles():

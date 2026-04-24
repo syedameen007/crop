@@ -5,9 +5,12 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import httpx
 from bson import ObjectId
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from pymongo import DESCENDING, MongoClient
 
@@ -21,6 +24,7 @@ except ImportError:
 
 
 BASE_DIR = Path(__file__).resolve().parent
+WEB_DIR = BASE_DIR / "web"
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
 MONGODB_DB = os.getenv("MONGODB_DB", "crop_service")
 MONGODB_COLLECTION = os.getenv("MONGODB_COLLECTION", "predictions")
@@ -33,6 +37,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+if WEB_DIR.exists():
+    app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
 
 
 class PredictionPayload(BaseModel):
@@ -116,7 +122,6 @@ def create_temp_soil_card(upload: UploadFile) -> tuple[str, dict[str, Any]]:
     metadata = {
         "filename": upload.filename,
         "content_type": upload.content_type,
-        "saved_path": temp_path,
     }
     return temp_path, metadata
 
@@ -124,6 +129,64 @@ def create_temp_soil_card(upload: UploadFile) -> tuple[str, dict[str, Any]]:
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+@app.get("/location/reverse")
+def reverse_geocode(latitude: float, longitude: float):
+    try:
+        response = httpx.get(
+            "https://nominatim.openstreetmap.org/reverse",
+            params={
+                "format": "jsonv2",
+                "lat": latitude,
+                "lon": longitude,
+                "addressdetails": 1,
+            },
+            headers={"User-Agent": "KrishiMitra/1.0"},
+            timeout=15,
+        )
+        response.raise_for_status()
+    except Exception as error:
+        raise HTTPException(status_code=502, detail="Could not resolve current location.") from error
+
+    payload = response.json()
+    address = payload.get("address", {})
+    area = (
+        address.get("suburb")
+        or address.get("city_district")
+        or address.get("town")
+        or address.get("city")
+        or address.get("county")
+        or address.get("state_district")
+        or payload.get("display_name")
+    )
+    city = (
+        address.get("city")
+        or address.get("town")
+        or address.get("village")
+        or address.get("municipality")
+        or area
+    )
+
+    return {
+        "latitude": latitude,
+        "longitude": longitude,
+        "area": area,
+        "city": city,
+        "state": address.get("state"),
+        "country": address.get("country"),
+        "display_name": payload.get("display_name"),
+    }
+
+
+@app.get("/", include_in_schema=False)
+def serve_frontend():
+    if not WEB_DIR.exists():
+        raise HTTPException(status_code=404, detail="Frontend is not available.")
+    return FileResponse(
+        WEB_DIR / "index.html",
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
 
 
 @app.post("/predictions")

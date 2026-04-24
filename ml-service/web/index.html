@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KrishiMitra</title>
+    <link rel="stylesheet" href="/static/styles.css?v=hackathon-ui-2" />
+    <script src="/static/app.js?v=hackathon-ui-2" defer></script>
+  </head>
+  <body>
+    <main id="app">
+      <section id="landingView" class="view landing-view">
+        <div class="landing-shell">
+          <div class="landing-card">
+            <div class="landing-visual">
+              <div class="landing-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"></path>
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                </svg>
+              </div>
+            </div>
+
+            <h1>KrishiMitra</h1>
+            <p class="landing-subtitle">Smart crop decisions made simple</p>
+
+            <div class="feature-chips">
+              <span>Soil-aware</span>
+              <span>Weather smart</span>
+              <span>Easy to use</span>
+            </div>
+
+            <p class="landing-label">CHOOSE YOUR LANGUAGE</p>
+            <div class="language-row">
+              <button class="language-chip active" type="button">English</button>
+              <button class="language-chip" type="button">Kannada</button>
+              <button class="language-chip" type="button">Hindi</button>
+            </div>
+
+            <button id="startBtn" class="cta-button" type="button">
+              Start Recommendation
+            </button>
+
+            <p class="landing-footer">Free | No registration | Works with saved history</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="modeView" class="view mode-view" hidden>
+        <div class="mode-page">
+          <div class="page-header compact">
+            <div class="header-left">
+              <button id="backToLandingBtn" class="round-button" type="button" aria-label="Go back">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 12H5"></path>
+                  <path d="M12 5l-7 7 7 7"></path>
+                </svg>
+              </button>
+              <span class="header-title">Smart Farming</span>
+            </div>
+            <div class="step-dots">
+              <span class="dot dot-wide active"></span>
+              <span class="dot active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+
+          <div class="mode-content">
+            <h2>How would you like to proceed?</h2>
+            <p>Choose what fits you best. You can change this anytime.</p>
+
+            <button id="simpleModeCard" class="mode-card selected" type="button" data-mode="simple">
+              <div class="mode-card-top">
+                <div class="mode-icon mode-icon-green">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3l1.9 5.8h6.1l-4.9 3.6 1.9 5.7L12 14.5l-4.9 3.6 1.9-5.7L4 8.8h6.1z"></path>
+                  </svg>
+                </div>
+                <span class="mode-badge">Recommended</span>
+              </div>
+              <h3>Simple Mode</h3>
+              <p>No soil report needed. Answer quick questions and get crop advice.</p>
+              <div class="mode-meta">
+                <span class="mode-meta-dot"></span>
+                <span>Takes about 1 minute</span>
+              </div>
+            </button>
+
+            <button id="advancedModeCard" class="mode-card" type="button" data-mode="advanced">
+              <div class="mode-card-top">
+                <div class="mode-icon mode-icon-warm">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 3H5a2 2 0 0 0-2 2v4"></path>
+                    <path d="M9 3h10a2 2 0 0 1 2 2v4"></path>
+                    <path d="M9 3v18"></path>
+                    <path d="M9 21h10a2 2 0 0 0 2-2v-4"></path>
+                    <path d="M9 21H5a2 2 0 0 1-2-2v-4"></path>
+                    <path d="M3 15h18"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </div>
+              </div>
+              <h3>Advanced Mode</h3>
+              <p>Upload your soil health card for more accurate suggestions from the trained model.</p>
+              <div class="mode-meta muted">
+                <span class="mode-meta-dot"></span>
+                <span>Needs soil report</span>
+              </div>
+            </button>
+
+            <div class="info-banner">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2l2.2 7.6L22 12l-7.8 2.4L12 22l-2.2-7.6L2 12l7.8-2.4L12 2z"></path>
+              </svg>
+              <span>Both modes use your trained crop model, weather outlook, irrigation checks, and saved prediction history.</span>
+            </div>
+
+            <button id="continueModeBtn" class="cta-button" type="button">Continue with Simple Mode</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="formView" class="view form-view" hidden>
+        <div class="form-shell">
+          <div class="page-header">
+            <button id="backToModeBtn" class="round-button" type="button" aria-label="Go back">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 12H5"></path>
+                <path d="M12 5l-7 7 7 7"></path>
+              </svg>
+            </button>
+
+            <h2 class="form-header-title">Smart Farming</h2>
+
+            <div class="step-dots">
+              <span class="dot dot-wide active"></span>
+              <span class="dot dot-wide active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+
+          <div class="page-title-block">
+            <h1 id="formTitle">Tell us about your farm</h1>
+            <p id="formSubtitle">Answer simply. The recommendation engine and MongoDB history are already connected underneath.</p>
+          </div>
+
+          <div class="mode-pill-row">
+            <span id="modePill" class="mode-pill">Simple Mode</span>
+            <span class="session-pill">Saved on this device</span>
+          </div>
+
+          <form id="predictionForm" class="farm-form">
+            <div class="section-heading">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"></path>
+                  <circle cx="12" cy="11" r="2.5"></circle>
+                </svg>
+              </div>
+              <h3>Your district</h3>
+            </div>
+
+            <div class="section-block">
+              <button id="useLocationBtn" class="big-action-button" type="button">
+                Use Current Location
+              </button>
+
+              <input
+                id="districtInput"
+                class="text-input big-input"
+                type="text"
+                placeholder="Your area or city will appear here"
+              />
+
+              <p id="locationStatus" class="helper-copy">
+                Use current location to auto-fill your area, or type your city manually.
+              </p>
+            </div>
+
+            <div id="simpleSoilSection">
+              <div class="section-heading">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 21c0-4.5 2.5-8.2 6.5-9.9"></path>
+                    <path d="M12 3c3.5 2 5.5 5.2 5.5 8.5 0 4.6-3.8 8.5-8.5 8.5S.5 16.1.5 11.5C.5 8 2.5 5 6 3"></path>
+                  </svg>
+                </div>
+                <h3>What does your soil look like?</h3>
+              </div>
+
+              <div id="soilCards" class="card-grid">
+                <button class="selection-card" type="button" data-soil="red">
+                  <span class="soil-swatch soil-red"></span>
+                  <strong>Red soil</strong>
+                  <span>Reddish, common in dry areas</span>
+                </button>
+                <button class="selection-card" type="button" data-soil="black">
+                  <span class="soil-swatch soil-black"></span>
+                  <strong>Black soil</strong>
+                  <span>Dark and rich, holds moisture longer</span>
+                </button>
+                <button class="selection-card" type="button" data-soil="sandy">
+                  <span class="soil-swatch soil-sandy"></span>
+                  <strong>Sandy soil</strong>
+                  <span>Loose, drains quickly</span>
+                </button>
+                <button class="selection-card" type="button" data-soil="clayey">
+                  <span class="soil-swatch soil-clay"></span>
+                  <strong>Clay soil</strong>
+                  <span>Heavy, sticky, and water-holding</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="advancedUploadSection" hidden>
+              <div class="section-heading">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                    <path d="M5 8V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3"></path>
+                    <path d="M12 18V9"></path>
+                    <path d="M8.5 12.5L12 9l3.5 3.5"></path>
+                  </svg>
+                </div>
+                <h3>Upload soil health card</h3>
+              </div>
+
+              <label class="upload-card" for="soilCardInput">
+                <input id="soilCardInput" type="file" accept=".pdf,.txt,.csv,.png,.jpg,.jpeg" />
+                <strong>Choose soil card</strong>
+                <span id="soilCardName">No file selected</span>
+              </label>
+            </div>
+
+            <div class="section-heading">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v18"></path>
+                  <path d="M8 7c0-2 1.8-4 4-4s4 2 4 4-1.8 4-4 4-4 1.8-4 4 1.8 4 4 4 4-2 4-4"></path>
+                </svg>
+              </div>
+              <h3>Do you have regular water for farming?</h3>
+            </div>
+
+            <div id="waterCards" class="wide-card-stack">
+              <button class="wide-card" type="button" data-water="yes">
+                <div>
+                  <strong>Yes, regular water</strong>
+                  <span>Borewell, canal, or drip irrigation</span>
+                </div>
+                <span class="wide-card-indicator"></span>
+              </button>
+              <button class="wide-card" type="button" data-water="rain">
+                <div>
+                  <strong>No, depends on rainfall</strong>
+                  <span>Mainly rain-fed farming</span>
+                </div>
+                <span class="wide-card-indicator"></span>
+              </button>
+            </div>
+
+            <div class="section-heading">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                </svg>
+              </div>
+              <h3>When do you want to start farming?</h3>
+            </div>
+
+            <div id="timeCards" class="time-grid">
+              <button class="time-card" type="button" data-time="now">
+                <strong>Now</strong>
+                <span>Immediately</span>
+              </button>
+              <button class="time-card" type="button" data-time="1-month">
+                <strong>1 month</strong>
+                <span>Soon</span>
+              </button>
+              <button class="time-card" type="button" data-time="2-3-months">
+                <strong>2-3 months</strong>
+                <span>Later</span>
+              </button>
+            </div>
+
+            <div class="section-block compact-gap">
+              <input id="cultivationDateInput" class="text-input big-input" type="date" />
+              <input id="irrigationMmInput" class="text-input big-input" type="number" min="0" step="0.1" placeholder="Planned irrigation in mm (optional)" />
+            </div>
+
+            <div class="section-heading">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 20h10"></path>
+                  <path d="M12 20v-9"></path>
+                  <path d="M12 11c0-3 2.3-5.5 5.2-5.9"></path>
+                  <path d="M12 11c0-3-2.3-5.5-5.2-5.9"></path>
+                </svg>
+              </div>
+              <h3>Previous crop (optional)</h3>
+            </div>
+
+            <div class="section-block">
+              <select id="previousCropSelect" class="text-input big-input">
+                <option value="">Select if you remember</option>
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+                <option value="cotton">Cotton</option>
+                <option value="ragi">Ragi</option>
+                <option value="maize">Maize</option>
+                <option value="mungbean">Mungbean</option>
+                <option value="chickpea">Chickpea</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+
+            <button id="submitButton" class="cta-button form-cta" type="submit">
+              Continue
+            </button>
+            <p id="statusMessage" class="status-copy" aria-live="polite"></p>
+          </form>
+
+          <section id="resultSection" class="result-section" hidden>
+            <h3 class="result-title">Recommendation Result</h3>
+            <div id="resultContent" class="result-content"></div>
+          </section>
+
+          <section class="history-section">
+            <div class="history-header">
+              <h3>Saved recommendations</h3>
+              <button id="refreshHistoryBtn" class="small-pill-button" type="button">Refresh</button>
+            </div>
+            <p id="historyStatus" class="helper-copy">Loading saved predictions...</p>
+            <div id="historyList" class="history-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
