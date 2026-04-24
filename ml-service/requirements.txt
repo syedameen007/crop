@@ -1,0 +1,12 @@
+fastapi==0.116.1
+uvicorn==0.35.0
+pymongo==4.14.1
+mongomock==4.3.0
+httpx==0.28.1
+pandas==2.3.2
+numpy==2.3.3
+scikit-learn==1.8.0
+pypdf==6.0.0
+Pillow==11.3.0
+pytesseract==0.3.13
+python-multipart==0.0.20

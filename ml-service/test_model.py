@@ -1024,6 +1024,37 @@ def get_kaggle_long_range_weather(location, args, start_date, end_date, forecast
     }
 
 
+def get_crop_duration_days(crop):
+    days = CROP_HARVEST_DAYS.get(crop)
+    if not days:
+        return None
+
+    return round((days[0] + days[1]) / 2)
+
+
+def get_crop_duration_weather_outlook(crop, location, args):
+    duration_days = get_crop_duration_days(crop)
+    if duration_days is None:
+        return None
+
+    planting_date = get_planting_date(args)
+    end_date = planting_date + timedelta(days=duration_days - 1)
+
+    outlook = get_kaggle_long_range_weather(
+        location,
+        args,
+        planting_date,
+        end_date,
+        duration_days,
+    )
+    outlook["duration_days"] = duration_days
+    outlook["daily_rainfall_average"] = round(
+        outlook["rainfall"] / max(1, duration_days),
+        2,
+    )
+    return outlook
+
+
 def get_weather(location, args):
     api_key = args.weather_api_key or os.getenv("OPENWEATHER_API_KEY")
     start_date, end_date, forecast_days = get_forecast_window(args)
@@ -1447,6 +1478,59 @@ def print_harvest_window(crop, args):
     )
 
 
+def print_crop_duration_weather_outlook(crop, location, args):
+    outlook = get_crop_duration_weather_outlook(crop, location, args)
+
+    if not outlook:
+        return
+
+    crop_profiles = load_crop_profiles()
+    crop_profile = crop_profiles.get(crop)
+    duration_input_values = None
+    if crop_profile:
+        duration_input_values = {
+            "N": crop_profile["N"]["mean"],
+            "P": crop_profile["P"]["mean"],
+            "K": crop_profile["K"]["mean"],
+            "temperature": outlook["temperature"],
+            "humidity": outlook["humidity"],
+            "ph": crop_profile["ph"]["mean"],
+            "rainfall": outlook["daily_rainfall_average"],
+        }
+        duration_fit = evaluate_crop_fit(crop, duration_input_values, crop_profiles)
+    else:
+        duration_fit = None
+
+    print("\nFull Crop Duration Weather Outlook:")
+    print(
+        f"Projected crop duration for {crop}: about {outlook['duration_days']} day(s)"
+    )
+    print("Weather source:", outlook["source"])
+    if outlook.get("long_range_city"):
+        print("Historical-pattern city used:", outlook["long_range_city"])
+    print("Crop window:", outlook["start_date"], "to", outlook["end_date"])
+    print("Average temperature across crop cycle:", f"{outlook['temperature']:.2f} C")
+    print("Average humidity across crop cycle:", f"{outlook['humidity']:.2f} %")
+    print("Total rainfall across crop cycle:", f"{outlook['rainfall']:.2f} mm")
+    print(
+        "Average daily rainfall across crop cycle:",
+        f"{outlook['daily_rainfall_average']:.2f} mm",
+    )
+    print("Likely weather pattern:", outlook["weather_type"])
+
+    if duration_fit:
+        print("\nHow the full season looks for this crop:")
+        for item in duration_fit["matches"][:3]:
+            print("- Good:", match_reason(item))
+        for item in duration_fit["concerns"][:2]:
+            print("- Watch:", concern_reason(item, crop))
+
+    print(
+        "Season note: this is a full-cycle historical-pattern estimate so the farmer can "
+        "review weather from planting to harvest, not just the starting week."
+    )
+
+
 def ask_value(name):
     while True:
         value = input(f"Enter {name}: ").strip()
@@ -1612,6 +1696,7 @@ def parse_args():
 def main():
     args = parse_args()
     weather = None
+    location = None
 
     if args.auto_weather:
         location = get_location(args)
@@ -1708,6 +1793,9 @@ def main():
         input_values,
         args.compare_crop,
     )
+
+    if location is not None:
+        print_crop_duration_weather_outlook(prediction, location, args)
 
     weather_context = weather if weather is not None else {"rainfall": input_values["rainfall"]}
     print_irrigation_advice(prediction, weather_context, args)
