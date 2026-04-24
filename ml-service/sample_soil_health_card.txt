@@ -1,0 +1,5 @@
+Soil Health Card
+Available Nitrogen: 90
+Available Phosphorus: 42
+Available Potassium: 43
+Soil pH: 6.5
